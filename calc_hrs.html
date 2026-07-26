@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Horas Trabalhadas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f7f8fa;
+            color: #2b2d30;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            background: #ffffff;
+            border: 1px solid #e1e3e6;
+            padding: 32px;
+            border-radius: 8px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            color: #2b2d30;
+            margin-bottom: 24px;
+            font-size: 1.5em;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #2b2d30;
+            font-weight: 400;
+            font-size: 0.9em;
+        }
+
+        label small {
+            color: #6c707e;
+            font-weight: 300;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 4px;
+            font-size: 1em;
+            background: #ffffff;
+            color: #2b2d30;
+            transition: border-color 0.2s ease;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #0969da;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.12);
+        }
+
+        input[type="text"]:hover {
+            border-color: #8c959f;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 10px 16px;
+            background: #0969da;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .calculate-btn:hover {
+            background: #0860ca;
+        }
+
+        .calculate-btn:active {
+            background: #0757ba;
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f6f8fa;
+            border: 1px solid #d1d9e0;
+            border-radius: 4px;
+            font-size: 0.9em;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.3s ease;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .error {
+            background: #fff8f0;
+            border-color: #f4c2a1;
+            color: #9a6700;
+        }
+
+        .info-box {
+            background: #f6f8fa;
+            border: 1px solid #d1d9e0;
+            border-left: 3px solid #0969da;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #656d76;
+        }
+
+        .time-display {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1f2328;
+            margin-bottom: 8px;
+        }
+
+        .result-line {
+            color: #656d76;
+            margin: 4px 0;
+        }
+
+        .result-highlight {
+            color: #0969da;
+            font-weight: 500;
+        }
+
+        .result-success {
+            color: #1a7f37;
+            font-weight: 500;
+        }
+
+        .result-warning {
+            color: #bf8700;
+            font-weight: 500;
+        }
+
+        .countdown-section {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f6f8fa;
+            border: 1px solid #d1d9e0;
+            border-radius: 4px;
+        }
+
+        .countdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .countdown-label {
+            font-size: 0.85em;
+            color: #656d76;
+            font-weight: 500;
+        }
+
+        .refresh-btn {
+            background: #ffffff;
+            border: 1px solid #d1d9e0;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #656d76;
+            line-height: 1;
+        }
+
+        .refresh-btn:hover {
+            background: #f6f8fa;
+            border-color: #8c959f;
+            color: #2b2d30;
+        }
+
+        .refresh-btn:active {
+            background: #eaeef2;
+            transform: rotate(180deg);
+        }
+
+        .countdown-display {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1f2328;
+            text-align: center;
+        }
+
+        .countdown-display.expired {
+            color: #1a7f37;
+        }
+
+        .countdown-display.soon {
+            color: #bf8700;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3em;
+            }
+
+            .countdown-display {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Horas Trabalhadas</h1>
+        
+        <div class="info-box">
+            <strong>Como usar:</strong> Cole os horários no campo abaixo separados por barras, traços ou espaços.<br> Exemplo: <code>08:15:56 | 11:19:48 | 12:20:44</code>
+        </div>
+
+        <form id="horasForm" onsubmit="return false;">
+            <div class="form-group">
+                <label for="horariosPaste">Cole seus marcadores de ponto:</label>
+                <input type="text" id="horariosPaste" placeholder="08:15:56 | 11:19:48 | 12:20:44" autocomplete="off">
+            </div>
+
+            <button type="button" class="calculate-btn" id="calcBtn">
+                Calcular
+            </button>
+        </form>
+
+        <div id="resultado" class="result"></div>
+
+        <div class="countdown-section">
+            <div class="countdown-header">
+                <span class="countdown-label">Tempo até 11:00</span>
+                <button type="button" class="refresh-btn" id="refreshBtn11" title="Atualizar">
+                    ⟳
+                </button>
+            </div>
+            <div id="contador11" class="countdown-display">
+                Calculando...
+            </div>
+        </div>
+
+        <div class="countdown-section">
+            <div class="countdown-header">
+                <span class="countdown-label">Tempo até 17:30</span>
+                <button type="button" class="refresh-btn" id="refreshBtn" title="Atualizar">
+                    ⟳
+                </button>
+            </div>
+            <div id="contador" class="countdown-display">
+                Calculando...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.split(':').map(Number);
+            return parts[0] * 60 + parts[1];
+        }
+
+        function minutesToTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        }
+
+        function mostrarResultado(mensagem, isError) {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = mensagem;
+            resultado.className = 'result' + (isError ? ' error' : '');
+            
+            resultado.classList.remove('show');
+            setTimeout(() => resultado.classList.add('show'), 100);
+        }
+
+        function extrairHorarios(texto) {
+            // Regex flexível que busca por padrões HH:MM ou HH:MM:SS
+            const regex = /\b([0-1]?[0-9]|2[0-3]):([0-5][0-9])(?::([0-5][0-9]))?\b/g;
+            const matches = texto.match(regex);
+            
+            if (!matches) return [];
+
+            // Retorna array mantendo só HH:MM de cada item
+            return matches.map(hora => {
+                const parts = hora.split(':');
+                return `${parts[0].padStart(2, '0')}:${parts[1]}`;
+            });
+        }
+
+        function calcular() {
+            const inputVal = document.getElementById('horariosPaste').value;
+            const horarios = extrairHorarios(inputVal);
+
+            if (horarios.length < 3) {
+                mostrarResultado('Informe pelo menos 3 horários no formato HH:MM (Entrada, Saída Almoço e Retorno Almoço).', true);
+                return;
+            }
+
+            const entrada = horarios[0];
+            const saidaAlmoco = horarios[1];
+            const retornoAlmoco = horarios[2];
+            const saida = horarios[3] || null; // O quarto horário é opcional
+
+            const entradaMin = timeToMinutes(entrada);
+            const saidaAlmocoMin = timeToMinutes(saidaAlmoco);
+            const retornoAlmocoMin = timeToMinutes(retornoAlmoco);
+            
+            if (saidaAlmocoMin <= entradaMin) {
+                mostrarResultado('O horário de saída para almoço deve ser após a entrada.', true);
+                return;
+            }
+            
+            if (retornoAlmocoMin <= saidaAlmocoMin) {
+                mostrarResultado('O horário de retorno deve ser após a saída para almoço.', true);
+                return;
+            }
+
+            const intervaloAlmoco = retornoAlmocoMin - saidaAlmocoMin;
+            const horasTrabalhadasManha = saidaAlmocoMin - entradaMin;
+            const horasNecessarias = 8 * 60;
+            const horasRestantes = horasNecessarias - horasTrabalhadasManha;
+
+            if (saida) {
+                const saidaMin = timeToMinutes(saida);
+                
+                if (saidaMin <= retornoAlmocoMin) {
+                    mostrarResultado('O horário de saída deve ser após o retorno do almoço.', true);
+                    return;
+                }
+                
+                const horasTrabalhadasTarde = saidaMin - retornoAlmocoMin;
+                const totalTrabalhado = horasTrabalhadasManha + horasTrabalhadasTarde;
+                
+                const totalHoras = Math.floor(totalTrabalhado / 60);
+                const totalMinutos = totalTrabalhado % 60;
+                
+                let mensagem = `<div class="time-display">${totalHoras}h ${totalMinutos}min trabalhadas</div>`;
+                mensagem += `<div class="result-line">Entrada: <span class="result-highlight">${entrada}</span> | Almoço: <span class="result-highlight">${saidaAlmoco} - ${retornoAlmoco}</span> | Saída: <span class="result-highlight">${saida}</span></div>`;
+                mensagem += `<div class="result-line">Manhã: <span class="result-highlight">${minutesToTime(horasTrabalhadasManha)}</span> | Intervalo: <span class="result-highlight">${minutesToTime(intervaloAlmoco)}</span> | Tarde: <span class="result-highlight">${minutesToTime(horasTrabalhadasTarde)}</span></div>`;
+                
+                if (totalTrabalhado < horasNecessarias) {
+                    const falta = horasNecessarias - totalTrabalhado;
+                    mensagem += `<br><div class="result-warning">Faltam ${minutesToTime(falta)} para completar 8h</div>`;
+                } else if (totalTrabalhado > horasNecessarias) {
+                    const extra = totalTrabalhado - horasNecessarias;
+                    mensagem += `<br><div class="result-success">${minutesToTime(extra)} de hora extra</div>`;
+                } else {
+                    mensagem += `<br><div class="result-success">Jornada completa de 8 horas</div>`;
+                }
+                
+                mostrarResultado(mensagem, false);
+                
+            } else {
+                const horarioSaidaMin = retornoAlmocoMin + horasRestantes;
+                const horarioSaida = minutesToTime(horarioSaidaMin);
+                
+                let mensagem = `<div class="time-display">8h completas às ${horarioSaida}</div>`;
+                mensagem += `<div class="result-line">Entrada: <span class="result-highlight">${entrada}</span> | Almoço: <span class="result-highlight">${saidaAlmoco} - ${retornoAlmoco}</span></div>`;
+                mensagem += `<div class="result-line">Manhã: <span class="result-highlight">${minutesToTime(horasTrabalhadasManha)}</span> | Intervalo: <span class="result-highlight">${minutesToTime(intervaloAlmoco)}</span> | Tarde: <span class="result-highlight">${minutesToTime(horasRestantes)}</span></div>`;
+                mensagem += `<br><div class="result-success">Total: 8h00min de trabalho</div>`;
+                
+                mostrarResultado(mensagem, false);
+            }
+        }
+
+        function atualizarContador() {
+            const agora = new Date();
+            const alvo = new Date();
+            alvo.setHours(17, 30, 0, 0);
+            
+            if (agora > alvo) {
+                const diferenca = agora - alvo;
+                const horas = Math.floor(diferenca / (1000 * 60 * 60));
+                const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+                
+                const contador = document.getElementById('contador');
+                contador.textContent = `Passou há ${horas}h ${minutos}m ${segundos}s`;
+                contador.className = 'countdown-display expired';
+                return;
+            }
+            
+            const diferenca = alvo - agora;
+            const horas = Math.floor(diferenca / (1000 * 60 * 60));
+            const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+            
+            const contador = document.getElementById('contador');
+            contador.textContent = `Faltam ${horas}h ${minutos}m ${segundos}s`;
+            
+            if (horas === 0 && minutos < 30) {
+                contador.className = 'countdown-display soon';
+            } else {
+                contador.className = 'countdown-display';
+            }
+        }
+
+        function atualizarContador11() {
+            const agora = new Date();
+            const alvo = new Date();
+            alvo.setHours(11, 0, 0, 0);
+            
+            if (agora > alvo) {
+                const diferenca = agora - alvo;
+                const horas = Math.floor(diferenca / (1000 * 60 * 60));
+                const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+                
+                const contador = document.getElementById('contador11');
+                contador.textContent = `Passou há ${horas}h ${minutos}m ${segundos}s`;
+                contador.className = 'countdown-display expired';
+                return;
+            }
+            
+            const diferenca = alvo - agora;
+            const horas = Math.floor(diferenca / (1000 * 60 * 60));
+            const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+            
+            const contador = document.getElementById('contador11');
+            contador.textContent = `Faltam ${horas}h ${minutos}m ${segundos}s`;
+            
+            if (horas === 0 && minutos < 30) {
+                contador.className = 'countdown-display soon';
+            } else {
+                contador.className = 'countdown-display';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('calcBtn').addEventListener('click', calcular);
+        document.getElementById('refreshBtn').addEventListener('click', atualizarContador);
+        document.getElementById('refreshBtn11').addEventListener('click', atualizarContador11);
+
+        // Calcula automaticamente assim que colar ou digitar
+        const pasteInput = document.getElementById('horariosPaste');
+        pasteInput.addEventListener('input', () => {
+            setTimeout(calcular, 200);
+        });
+
+        // Inicialização
+        window.addEventListener('load', () => {
+            // Exemplo padrão ao abrir
+            pasteInput.value = '';
+            setTimeout(calcular, 300);
+            
+            // Iniciar contadores
+            setTimeout(() => {
+                atualizarContador11();
+                atualizarContador();
+            }, 100);
+            
+            setInterval(atualizarContador11, 1000);
+            setInterval(atualizarContador, 1000);
+        });
+    </script>
+</body>
+</html>
