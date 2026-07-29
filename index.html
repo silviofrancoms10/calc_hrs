@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Horas Trabalhadas</title>
+    <script>
+        // Aplica o tema antes do primeiro paint para evitar "flash" de tela clara.
+        (function () {
+            try {
+                var storedTheme = localStorage.getItem('theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = storedTheme || (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -11,10 +24,92 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-bg: #f7f8fa;
+            --color-container-bg: #ffffff;
+            --color-container-border: #e1e3e6;
+            --color-shadow: rgba(0, 0, 0, 0.06);
+            --color-text: #2b2d30;
+            --color-text-secondary: #6c707e;
+            --color-text-muted: #656d76;
+            --color-input-bg: #ffffff;
+            --color-input-border: #d0d7de;
+            --color-input-border-hover: #8c959f;
+            --color-accent: #0969da;
+            --color-accent-focus-ring: rgba(9, 105, 218, 0.12);
+            --color-btn-bg: #0969da;
+            --color-btn-bg-hover: #0860ca;
+            --color-btn-bg-active: #0757ba;
+            --color-btn-text: #ffffff;
+            --color-card-bg: #f6f8fa;
+            --color-card-border: #d1d9e0;
+            --color-error-bg: #fff8f0;
+            --color-error-border: #f4c2a1;
+            --color-error-text: #9a6700;
+            --color-success-text: #1a7f37;
+            --color-warning-text: #bf8700;
+            --color-display-text: #1f2328;
+            --color-refresh-bg: #ffffff;
+            --color-refresh-border: #d1d9e0;
+            --color-refresh-text: #656d76;
+            --color-refresh-bg-hover: #f6f8fa;
+            --color-refresh-border-hover: #8c959f;
+            --color-refresh-text-hover: #2b2d30;
+            --color-refresh-bg-active: #eaeef2;
+        }
+
+        [data-theme="dark"] {
+            --color-bg: #0d1117;
+            --color-container-bg: #161b22;
+            --color-container-border: #30363d;
+            --color-shadow: rgba(0, 0, 0, 0.5);
+            --color-text: #e6edf3;
+            --color-text-secondary: #9198a1;
+            --color-text-muted: #8b949e;
+            --color-input-bg: #0d1117;
+            --color-input-border: #30363d;
+            --color-input-border-hover: #6e7681;
+            --color-accent: #58a6ff;
+            --color-accent-focus-ring: rgba(88, 166, 255, 0.25);
+            --color-btn-bg: #1f6feb;
+            --color-btn-bg-hover: #388bfd;
+            --color-btn-bg-active: #58a6ff;
+            --color-btn-text: #ffffff;
+            --color-card-bg: #1c2128;
+            --color-card-border: #30363d;
+            --color-error-bg: #2d2110;
+            --color-error-border: #9e6a03;
+            --color-error-text: #e3b341;
+            --color-success-text: #3fb950;
+            --color-warning-text: #d29922;
+            --color-display-text: #e6edf3;
+            --color-refresh-bg: #21262d;
+            --color-refresh-border: #30363d;
+            --color-refresh-text: #9198a1;
+            --color-refresh-bg-hover: #30363d;
+            --color-refresh-border-hover: #6e7681;
+            --color-refresh-text-hover: #e6edf3;
+            --color-refresh-bg-active: #383f47;
+        }
+
+        body,
+        .container,
+        input[type="text"],
+        .calculate-btn,
+        .result,
+        .info-box,
+        .countdown-section,
+        .refresh-btn,
+        .theme-toggle,
+        .countdown-display {
+            transition: background-color 0.25s ease, color 0.25s ease,
+                border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f7f8fa;
-            color: #2b2d30;
+            background: var(--color-bg);
+            color: var(--color-text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -24,20 +119,49 @@
         }
 
         .container {
-            background: #ffffff;
-            border: 1px solid #e1e3e6;
+            background: var(--color-container-bg);
+            border: 1px solid var(--color-container-border);
             padding: 32px;
             border-radius: 8px;
             max-width: 480px;
             width: 100%;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px var(--color-shadow);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 12px;
         }
 
         h1 {
-            color: #2b2d30;
-            margin-bottom: 24px;
+            color: var(--color-text);
             font-size: 1.5em;
             font-weight: 500;
+        }
+
+        .theme-toggle {
+            flex-shrink: 0;
+            background: var(--color-refresh-bg);
+            border: 1px solid var(--color-refresh-border);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 1.1em;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--color-refresh-text);
+        }
+
+        .theme-toggle:hover {
+            background: var(--color-refresh-bg-hover);
+            border-color: var(--color-refresh-border-hover);
+            color: var(--color-refresh-text-hover);
+        }
+
+        .theme-toggle:active {
+            background: var(--color-refresh-bg-active);
         }
 
         .form-group {
@@ -47,44 +171,44 @@
         label {
             display: block;
             margin-bottom: 6px;
-            color: #2b2d30;
+            color: var(--color-text);
             font-weight: 400;
             font-size: 0.9em;
         }
 
         label small {
-            color: #6c707e;
+            color: var(--color-text-secondary);
             font-weight: 300;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 12px;
-            border: 1px solid #d0d7de;
+            border: 1px solid var(--color-input-border);
             border-radius: 4px;
             font-size: 1em;
-            background: #ffffff;
-            color: #2b2d30;
+            background: var(--color-input-bg);
+            color: var(--color-text);
             transition: border-color 0.2s ease;
             font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #0969da;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.12);
+            border-color: var(--color-accent);
+            background: var(--color-input-bg);
+            box-shadow: 0 0 0 3px var(--color-accent-focus-ring);
         }
 
         input[type="text"]:hover {
-            border-color: #8c959f;
+            border-color: var(--color-input-border-hover);
         }
 
         .calculate-btn {
             width: 100%;
             padding: 10px 16px;
-            background: #0969da;
-            color: #ffffff;
+            background: var(--color-btn-bg);
+            color: var(--color-btn-text);
             border: none;
             border-radius: 4px;
             font-size: 0.9em;
@@ -95,24 +219,24 @@
         }
 
         .calculate-btn:hover {
-            background: #0860ca;
+            background: var(--color-btn-bg-hover);
         }
 
         .calculate-btn:active {
-            background: #0757ba;
+            background: var(--color-btn-bg-active);
         }
 
         .result {
             margin-top: 24px;
             padding: 16px;
-            background: #f6f8fa;
-            border: 1px solid #d1d9e0;
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-card-border);
             border-radius: 4px;
             font-size: 0.9em;
             line-height: 1.6;
             opacity: 0;
             transform: translateY(8px);
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.25s ease, border-color 0.25s ease;
         }
 
         .result.show {
@@ -121,55 +245,55 @@
         }
 
         .error {
-            background: #fff8f0;
-            border-color: #f4c2a1;
-            color: #9a6700;
+            background: var(--color-error-bg);
+            border-color: var(--color-error-border);
+            color: var(--color-error-text);
         }
 
         .info-box {
-            background: #f6f8fa;
-            border: 1px solid #d1d9e0;
-            border-left: 3px solid #0969da;
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-card-border);
+            border-left: 3px solid var(--color-accent);
             padding: 12px;
             margin-bottom: 20px;
             border-radius: 4px;
             font-size: 0.85em;
-            color: #656d76;
+            color: var(--color-text-muted);
         }
 
         .time-display {
             font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
             font-size: 1.1em;
             font-weight: 600;
-            color: #1f2328;
+            color: var(--color-display-text);
             margin-bottom: 8px;
         }
 
         .result-line {
-            color: #656d76;
+            color: var(--color-text-muted);
             margin: 4px 0;
         }
 
         .result-highlight {
-            color: #0969da;
+            color: var(--color-accent);
             font-weight: 500;
         }
 
         .result-success {
-            color: #1a7f37;
+            color: var(--color-success-text);
             font-weight: 500;
         }
 
         .result-warning {
-            color: #bf8700;
+            color: var(--color-warning-text);
             font-weight: 500;
         }
 
         .countdown-section {
             margin-top: 24px;
             padding: 16px;
-            background: #f6f8fa;
-            border: 1px solid #d1d9e0;
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-card-border);
             border-radius: 4px;
         }
 
@@ -182,30 +306,30 @@
 
         .countdown-label {
             font-size: 0.85em;
-            color: #656d76;
+            color: var(--color-text-muted);
             font-weight: 500;
         }
 
         .refresh-btn {
-            background: #ffffff;
-            border: 1px solid #d1d9e0;
+            background: var(--color-refresh-bg);
+            border: 1px solid var(--color-refresh-border);
             border-radius: 4px;
             padding: 4px 12px;
             font-size: 1.2em;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: #656d76;
+            color: var(--color-refresh-text);
             line-height: 1;
         }
 
         .refresh-btn:hover {
-            background: #f6f8fa;
-            border-color: #8c959f;
-            color: #2b2d30;
+            background: var(--color-refresh-bg-hover);
+            border-color: var(--color-refresh-border-hover);
+            color: var(--color-refresh-text-hover);
         }
 
         .refresh-btn:active {
-            background: #eaeef2;
+            background: var(--color-refresh-bg-active);
             transform: rotate(180deg);
         }
 
@@ -213,16 +337,16 @@
             font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
             font-size: 1.3em;
             font-weight: 600;
-            color: #1f2328;
+            color: var(--color-display-text);
             text-align: center;
         }
 
         .countdown-display.expired {
-            color: #1a7f37;
+            color: var(--color-success-text);
         }
 
         .countdown-display.soon {
-            color: #bf8700;
+            color: var(--color-warning-text);
         }
 
         @media (max-width: 480px) {
@@ -243,8 +367,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>Calculadora de Horas Trabalhadas</h1>
-        
+        <div class="header-row">
+            <h1>Calculadora de Horas Trabalhadas</h1>
+            <button type="button" class="theme-toggle" id="themeToggle" title="Alternar tema" aria-label="Alternar tema claro/escuro">🌙</button>
+        </div>
+
         <div class="info-box">
             <strong>Como usar:</strong> Cole os horários no campo abaixo separados por barras, traços ou espaços.<br> Exemplo: <code>08:15:56 | 11:19:48 | 12:20:44</code>
         </div>
@@ -288,6 +415,44 @@
     </div>
 
     <script>
+        // ---- Tema (claro/escuro) ----
+        const THEME_STORAGE_KEY = 'theme';
+
+        function getStoredTheme() {
+            try {
+                return localStorage.getItem(THEME_STORAGE_KEY);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function setStoredTheme(theme) {
+            try {
+                localStorage.setItem(THEME_STORAGE_KEY, theme);
+            } catch (e) {
+                // localStorage indisponível (modo privado, etc.) - ignora silenciosamente
+            }
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const toggleBtn = document.getElementById('themeToggle');
+            if (toggleBtn) {
+                const isDark = theme === 'dark';
+                toggleBtn.textContent = isDark ? '☀️' : '🌙';
+                const label = isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro';
+                toggleBtn.title = label;
+                toggleBtn.setAttribute('aria-label', label);
+            }
+        }
+
+        function toggleTheme() {
+            const atual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const proximo = atual === 'dark' ? 'light' : 'dark';
+            applyTheme(proximo);
+            setStoredTheme(proximo);
+        }
+
         function timeToMinutes(timeStr) {
             if (!timeStr) return 0;
             const parts = timeStr.split(':').map(Number);
@@ -467,6 +632,23 @@
         document.getElementById('calcBtn').addEventListener('click', calcular);
         document.getElementById('refreshBtn').addEventListener('click', atualizarContador);
         document.getElementById('refreshBtn11').addEventListener('click', atualizarContador11);
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+        // Acompanha mudanças no tema do sistema em tempo real, mas só enquanto
+        // o usuário não tiver escolhido manualmente uma preferência.
+        if (window.matchMedia) {
+            const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            const onSystemThemeChange = (event) => {
+                if (!getStoredTheme()) {
+                    applyTheme(event.matches ? 'dark' : 'light');
+                }
+            };
+            if (darkMediaQuery.addEventListener) {
+                darkMediaQuery.addEventListener('change', onSystemThemeChange);
+            } else if (darkMediaQuery.addListener) {
+                darkMediaQuery.addListener(onSystemThemeChange);
+            }
+        }
 
         // Calcula automaticamente assim que colar ou digitar
         const pasteInput = document.getElementById('horariosPaste');
@@ -476,6 +658,10 @@
 
         // Inicialização
         window.addEventListener('load', () => {
+            // Sincroniza o ícone do toggle com o tema já aplicado no <head> (evita flash)
+            const temaAtual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            applyTheme(temaAtual);
+
             // Exemplo padrão ao abrir
             pasteInput.value = '';
             setTimeout(calcular, 300);
