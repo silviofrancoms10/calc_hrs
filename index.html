@@ -387,6 +387,365 @@
                 font-size: 1.1em;
             }
         }
+
+        /* ---- Easter egg: Konami / DOOM / Disco Voador ---- */
+        .ee-root {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000;
+        }
+
+        .ee-root.is-open {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ee-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 960px;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .ee-panel.is-active {
+            display: flex;
+        }
+
+        #eeVsCodePanel.ee-panel {
+            max-width: none;
+            width: 100%;
+            height: 100%;
+            padding: 12px 12px 52px;
+            justify-content: center;
+        }
+
+        #eeVsCodePanel .ee-vscode {
+            max-width: none;
+            width: 100%;
+            height: 100%;
+            max-height: calc(100vh - 64px);
+        }
+
+        #eeVsCodePanel .ee-vscode-sidebar {
+            width: 280px;
+            overflow-y: auto;
+        }
+
+        .ee-doom-frame-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .ee-doom-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ee-doom-container > div {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .ee-doom-hint {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.45);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .ee-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .ee-btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #ccc;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+
+        .ee-btn:hover {
+            background: #2a2a2a;
+            color: #fff;
+            border-color: #666;
+        }
+
+        .ee-btn-primary {
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        .ee-btn-primary:hover {
+            background: #0d2137;
+            color: #79b8ff;
+        }
+
+        .ee-vscode {
+            width: 100%;
+            max-width: 920px;
+            height: min(78vh, 560px);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #2b2b2b;
+            border-radius: 6px;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 13px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .ee-vscode-titlebar {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            background: #323233;
+            color: #ccc;
+            padding: 0 12px;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .ee-vscode-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .ee-vscode-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #555;
+        }
+
+        .ee-vscode-dots span:nth-child(1) { background: #ff5f57; }
+        .ee-vscode-dots span:nth-child(2) { background: #febc2e; }
+        .ee-vscode-dots span:nth-child(3) { background: #28c840; }
+
+        .ee-vscode-title {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .ee-vscode-body {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            background: #1e1e1e;
+        }
+
+        .ee-vscode-activity {
+            width: 48px;
+            background: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 8px;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .ee-vscode-activity span {
+            font-size: 20px;
+            opacity: 0.5;
+        }
+
+        .ee-vscode-activity span.active {
+            opacity: 1;
+            border-left: 2px solid #fff;
+            padding-left: 4px;
+            margin-left: -6px;
+        }
+
+        .ee-vscode-sidebar {
+            width: 200px;
+            background: #252526;
+            border-right: 1px solid #1a1a1a;
+            padding: 8px 0;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .ee-vscode-sidebar-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #bbb;
+            padding: 8px 16px 4px;
+        }
+
+        .ee-vscode-file {
+            padding: 3px 16px 3px 24px;
+            color: #ccc;
+            cursor: default;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ee-vscode-file.active {
+            background: #37373d;
+            color: #fff;
+        }
+
+        .ee-vscode-folder {
+            padding: 2px 8px 2px 0;
+            color: #ccc;
+            cursor: default;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12px;
+        }
+
+        .ee-vscode-folder.open::before {
+            content: '▾ ';
+            opacity: 0.7;
+        }
+
+        .ee-vscode-folder.closed::before {
+            content: '▸ ';
+            opacity: 0.7;
+        }
+
+        .ee-vscode-tree .ee-vscode-file,
+        .ee-vscode-tree .ee-vscode-folder {
+            padding-left: calc(8px + var(--tree-indent, 0px));
+        }
+
+        .ee-vscode-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .ee-vscode-tabs {
+            display: flex;
+            background: #2d2d2d;
+            height: 35px;
+            flex-shrink: 0;
+        }
+
+        .ee-vscode-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 12px;
+            background: #1e1e1e;
+            color: #fff;
+            border-right: 1px solid #252526;
+            font-size: 12px;
+        }
+
+        .ee-vscode-tab.inactive {
+            background: #2d2d2d;
+            color: #969696;
+        }
+
+        .ee-vscode-editor {
+            flex: 1;
+            overflow: auto;
+            padding: 8px 0;
+        }
+
+        .ee-vscode-code {
+            margin: 0;
+            padding: 0 16px;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #d4d4d4;
+            tab-size: 4;
+        }
+
+        .ee-vscode-code .ln {
+            display: inline-block;
+            width: 2.5em;
+            color: #858585;
+            user-select: none;
+            text-align: right;
+            padding-right: 1em;
+        }
+
+        .ee-vscode-code .kw { color: #569cd6; }
+        .ee-vscode-code .fn { color: #dcdcaa; }
+        .ee-vscode-code .str { color: #ce9178; }
+        .ee-vscode-code .cm { color: #6a9955; }
+        .ee-vscode-code .tp { color: #4ec9b0; }
+        .ee-vscode-code .num { color: #b5cea8; }
+        .ee-vscode-code .ann { color: #dcdcaa; }
+        .ee-vscode-code .fld { color: #9cdcfe; }
+
+        .ee-vscode-statusbar {
+            height: 22px;
+            background: #007acc;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 12px;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .ee-vscode-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 24px;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        .ee-vscode-nav .ee-btn {
+            pointer-events: auto;
+            opacity: 0.25;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+        }
+
+        .ee-vscode-nav .ee-btn:hover {
+            opacity: 1;
+        }
+
+        body.ee-active {
+            overflow: hidden;
+        }
+
+        body.ee-active .page-wrapper {
+            visibility: hidden;
+        }
     </style>
 </head>
 <body>
@@ -438,6 +797,163 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <div id="easterEggRoot" class="ee-root" aria-hidden="true">
+        <div id="eeDoomPanel" class="ee-panel">
+            <div class="ee-doom-frame-wrap">
+                <div id="eeDoomContainer" class="ee-doom-container"></div>
+                <span class="ee-doom-hint">Clique no jogo para capturar o teclado</span>
+            </div>
+            <div class="ee-actions">
+                <button type="button" class="ee-btn" id="eeExitBtn">Sair</button>
+                <button type="button" class="ee-btn ee-btn-primary" id="eeDiscoBtn">Disco Voador 🛸</button>
+            </div>
+        </div>
+
+        <div id="eeVsCodePanel" class="ee-panel">
+            <div class="ee-vscode">
+                <div class="ee-vscode-titlebar">
+                    <div class="ee-vscode-dots"><span></span><span></span><span></span></div>
+                    <span class="ee-vscode-title">CalculadoraHorasServiceImpl.java — SIS-PONTO-LEGADO</span>
+                </div>
+                <div class="ee-vscode-body">
+                    <div class="ee-vscode-activity">
+                        <span class="active">📁</span>
+                        <span>🔍</span>
+                        <span>⎇</span>
+                        <span>▶</span>
+                    </div>
+                    <div class="ee-vscode-sidebar">
+                        <div class="ee-vscode-sidebar-title">Explorer — SIS-PONTO-LEGADO</div>
+                        <div class="ee-vscode-tree">
+                            <div class="ee-vscode-folder open" style="--tree-indent: 0px">sis-ponto-legado</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 12px">src/main/java</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 24px">br/gov/empresa/rh/pontolegado</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 36px">config</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">PontoLegadoConfig.java</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">DataSourceFactory.java</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 36px">controller</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">PontoServlet.java</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">CalculadoraHorasAction.java</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 36px">service</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 48px">impl</div>
+                            <div class="ee-vscode-file active" style="--tree-indent: 60px">CalculadoraHorasServiceImpl.java</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 60px">MarcadorPontoServiceImpl.java</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">CalculadoraHorasService.java</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 36px">dao</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">MarcadorPontoDAO.java</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 48px">jdbc</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 60px">MarcadorPontoDAOImpl.java</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 36px">entity</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">MarcadorPontoEntity.java</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 48px">ResultadoJornadaDTO.java</div>
+                            <div class="ee-vscode-folder closed" style="--tree-indent: 36px">util</div>
+                            <div class="ee-vscode-folder open" style="--tree-indent: 24px">WebContent/WEB-INF</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 36px">web.xml</div>
+                            <div class="ee-vscode-file" style="--tree-indent: 12px">pom.xml</div>
+                        </div>
+                    </div>
+                    <div class="ee-vscode-main">
+                        <div class="ee-vscode-tabs">
+                            <div class="ee-vscode-tab inactive">MarcadorPontoDAOImpl.java</div>
+                            <div class="ee-vscode-tab inactive">web.xml</div>
+                            <div class="ee-vscode-tab">CalculadoraHorasServiceImpl.java</div>
+                        </div>
+                        <div class="ee-vscode-editor">
+                            <pre class="ee-vscode-code"><code><span class="ln"> 831</span><span class="kw">package</span> br.gov.empresa.rh.pontolegado.service.impl;
+<span class="ln"> 832</span>
+<span class="ln"> 833</span><span class="kw">import</span> java.util.*;
+<span class="ln"> 834</span><span class="kw">import</span> java.sql.*;
+<span class="ln"> 835</span><span class="kw">import</span> java.text.SimpleDateFormat;
+<span class="ln"> 836</span><span class="kw">import</span> javax.naming.*;
+<span class="ln"> 837</span><span class="kw">import</span> org.apache.log4j.Logger;
+<span class="ln"> 838</span><span class="kw">import</span> br.gov.empresa.rh.pontolegado.dao.jdbc.*;
+<span class="ln"> 839</span><span class="kw">import</span> br.gov.empresa.rh.pontolegado.entity.*;
+<span class="ln"> 840</span><span class="kw">import</span> br.gov.empresa.rh.pontolegado.exception.*;
+<span class="ln"> 841</span>
+<span class="ln"> 842</span><span class="cm">/**
+<span class="ln"> 843</span> * Nucleo do calculo de jornada — legado WebLogic 9.2 / JDK 1.5.
+<span class="ln"> 844</span> * @author silvio.franco
+<span class="ln"> 845</span> * @since 2008-03-14
+<span class="ln"> 846</span> * TODO: migrar para calc_hrs quando diretoria autorizar (ticket RH-8842)
+<span class="ln"> 847</span> */</span>
+<span class="ln"> 848</span><span class="ann">@Deprecated</span>
+<span class="ln"> 849</span><span class="kw">public class</span> <span class="tp">CalculadoraHorasServiceImpl</span>
+<span class="ln"> 850</span>        <span class="kw">extends</span> <span class="tp">AbstractPontoService</span>
+<span class="ln"> 851</span>        <span class="kw">implements</span> <span class="tp">CalculadoraHorasService</span> {
+<span class="ln"> 852</span>
+<span class="ln"> 853</span>    <span class="kw">private static final</span> Logger <span class="fld">LOG</span> =
+<span class="ln"> 854</span>            Logger.getLogger(<span class="tp">CalculadoraHorasServiceImpl</span>.<span class="kw">class</span>);
+<span class="ln"> 855</span>    <span class="kw">private static final int</span> <span class="fld">JORNADA_PADRAO_MIN</span> = <span class="num">480</span>; <span class="cm">// 8h fixo</span>
+<span class="ln"> 856</span>
+<span class="ln"> 857</span>    <span class="kw">private</span> Vector <span class="fld">marcadoresCache</span>;
+<span class="ln"> 858</span>    <span class="kw">private</span> Hashtable <span class="fld">configSistema</span>;
+<span class="ln"> 859</span>    <span class="kw">private</span> <span class="tp">MarcadorPontoDAOImpl</span> <span class="fld">marcadorPontoDAO</span>;
+<span class="ln"> 860</span>
+<span class="ln"> 861</span>    <span class="kw">public</span> <span class="fn">CalculadoraHorasServiceImpl</span>() {
+<span class="ln"> 862</span>        <span class="kw">this</span>.marcadoresCache = <span class="kw">new</span> Vector();
+<span class="ln"> 863</span>        <span class="kw">this</span>.configSistema = <span class="kw">new</span> Hashtable();
+<span class="ln"> 864</span>        <span class="kw">this</span>.marcadorPontoDAO = <span class="kw">new</span> <span class="tp">MarcadorPontoDAOImpl</span>();
+<span class="ln"> 865</span>        <span class="fn">carregarConfiguracaoLegada</span>();
+<span class="ln"> 866</span>    }
+<span class="ln"> 867</span>
+<span class="ln"> 868</span>    <span class="ann">@Override</span>
+<span class="ln"> 869</span>    <span class="ann">@SuppressWarnings</span>(<span class="str">"unchecked"</span>)
+<span class="ln"> 870</span>    <span class="kw">public synchronized</span> <span class="tp">ResultadoJornadaDTO</span> <span class="fn">calcularJornada</span>(String rawMarcadores)
+<span class="ln"> 871</span>            <span class="kw">throws</span> <span class="tp">PontoLegadoException</span> {
+<span class="ln"> 872</span>
+<span class="ln"> 873</span>        <span class="kw">if</span> (rawMarcadores == <span class="kw">null</span> || rawMarcadores.trim().equals(<span class="str">""</span>)) {
+<span class="ln"> 874</span>            <span class="kw">throw new</span> <span class="tp">PontoLegadoException</span>(<span class="str">"ERR_PONTO_001"</span>, <span class="str">"Marcadores vazios"</span>);
+<span class="ln"> 875</span>        }
+<span class="ln"> 876</span>
+<span class="ln"> 877</span>        StringBuffer sb = <span class="kw">new</span> StringBuffer(rawMarcadores);
+<span class="ln"> 878</span>        ArrayList horarios = <span class="fn">extrairHorariosLegado</span>(sb.toString()); <span class="cm">// raw type intencional</span>
+<span class="ln"> 879</span>
+<span class="ln"> 880</span>        <span class="kw">if</span> (horarios.size() &lt; <span class="num">3</span>) {
+<span class="ln"> 881</span>            LOG.warn(<span class="str">"Entrada invalida: "</span> + rawMarcadores);
+<span class="ln"> 882</span>            <span class="kw">throw new</span> <span class="tp">PontoLegadoException</span>(<span class="str">"ERR_PONTO_002"</span>,
+<span class="ln"> 883</span>                    <span class="str">"Minimo 3 marcadores (entrada, almoco, retorno)"</span>);
+<span class="ln"> 884</span>        }
+<span class="ln"> 885</span>
+<span class="ln"> 886</span>        <span class="kw">int</span> entradaMin = <span class="fn">timeToMinutes</span>((String) horarios.get(<span class="num">0</span>));
+<span class="ln"> 887</span>        <span class="kw">int</span> saidaAlmocoMin = <span class="fn">timeToMinutes</span>((String) horarios.get(<span class="num">1</span>));
+<span class="ln"> 888</span>        <span class="kw">int</span> retornoAlmocoMin = <span class="fn">timeToMinutes</span>((String) horarios.get(<span class="num">2</span>));
+<span class="ln"> 889</span>
+<span class="ln"> 890</span>        <span class="kw">if</span> (saidaAlmocoMin &lt;= entradaMin) {
+<span class="ln"> 891</span>            <span class="kw">throw new</span> <span class="tp">PontoLegadoException</span>(<span class="str">"ERR_PONTO_003"</span>,
+<span class="ln"> 892</span>                    <span class="str">"Saida almoco deve ser apos entrada"</span>);
+<span class="ln"> 893</span>        }
+<span class="ln"> 894</span>
+<span class="ln"> 895</span>        <span class="kw">int</span> horasManha = saidaAlmocoMin - entradaMin;
+<span class="ln"> 896</span>        <span class="kw">int</span> horasRestantes = <span class="fld">JORNADA_PADRAO_MIN</span> - horasManha;
+<span class="ln"> 897</span>        Date horarioSaida = <span class="fn">calcularSaidaPrevista</span>(retornoAlmocoMin, horasRestantes);
+<span class="ln"> 898</span>
+<span class="ln"> 899</span>        <span class="cm">// FIXME: virada de dia nao tratada — turno noturno ignora por ora</span>
+<span class="ln"> 900</span>        <span class="tp">ResultadoJornadaDTO</span> dto = <span class="kw">new</span> <span class="tp">ResultadoJornadaDTO</span>();
+<span class="ln"> 901</span>        dto.setHorarioSaidaPrevista(horarioSaida);
+<span class="ln"> 902</span>        dto.setTotalMinutos(<span class="fld">JORNADA_PADRAO_MIN</span>);
+<span class="ln"> 903</span>        marcadoresCache.add(rawMarcadores); <span class="cm">// cache infinito (?)</span>
+<span class="ln"> 904</span>
+<span class="ln"> 905</span>        <span class="kw">return</span> dto;
+<span class="ln"> 906</span>    }
+<span class="ln"> 907</span>}</code></pre>
+                        </div>
+                        <div class="ee-vscode-statusbar">
+                            <span>legacy-java-8</span>
+                            <span>Java</span>
+                            <span>UTF-8</span>
+                            <span>Ln 897, Col 41</span>
+                            <span>Spaces: 4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ee-vscode-nav">
+                <button type="button" class="ee-btn" id="eeBackToDoomBtn">← Doom</button>
+                <button type="button" class="ee-btn" id="eeVsCodeExitBtn">Sair</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -757,6 +1273,195 @@
             setInterval(atualizarContador11, 1000);
             setInterval(atualizarContador, 1000);
         });
+
+        // ---- Easter egg: Konami / DOOM / Disco Voador ----
+        const KONAMI_SEQUENCE = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+        ];
+        const DOOM_BUNDLE_URL = 'https://v8.js-dos.com/bundles/doom.jsdos';
+        const JS_DOS_CSS = 'https://cdn.jsdelivr.net/npm/js-dos@8/dist/js-dos.css';
+        const JS_DOS_SCRIPT = 'https://cdn.jsdelivr.net/npm/js-dos@8/dist/js-dos.js';
+        const KONAMI_RESET_MS = 2500;
+
+        const eeRoot = document.getElementById('easterEggRoot');
+        const eeDoomPanel = document.getElementById('eeDoomPanel');
+        const eeVsCodePanel = document.getElementById('eeVsCodePanel');
+        const eeDoomContainer = document.getElementById('eeDoomContainer');
+        const eeExitBtn = document.getElementById('eeExitBtn');
+        const eeDiscoBtn = document.getElementById('eeDiscoBtn');
+        const eeBackToDoomBtn = document.getElementById('eeBackToDoomBtn');
+        const eeVsCodeExitBtn = document.getElementById('eeVsCodeExitBtn');
+
+        let konamiIndex = 0;
+        let konamiResetTimer = null;
+        let doomScriptReady = false;
+        let doomScriptLoading = false;
+        let doomRunning = false;
+        let eeState = 'closed';
+
+        function resetKonamiProgress() {
+            konamiIndex = 0;
+            if (konamiResetTimer) {
+                clearTimeout(konamiResetTimer);
+                konamiResetTimer = null;
+            }
+        }
+
+        function scheduleKonamiReset() {
+            if (konamiResetTimer) {
+                clearTimeout(konamiResetTimer);
+            }
+            konamiResetTimer = setTimeout(resetKonamiProgress, KONAMI_RESET_MS);
+        }
+
+        function injectJsDosAssets() {
+            return new Promise((resolve, reject) => {
+                if (doomScriptReady) {
+                    resolve();
+                    return;
+                }
+                if (doomScriptLoading) {
+                    document.addEventListener('jsdos-ready', () => resolve(), { once: true });
+                    document.addEventListener('jsdos-error', () => reject(new Error('js-dos failed')), { once: true });
+                    return;
+                }
+
+                doomScriptLoading = true;
+
+                if (!document.querySelector('link[data-jsdos]')) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = JS_DOS_CSS;
+                    link.setAttribute('data-jsdos', '1');
+                    document.head.appendChild(link);
+                }
+
+                if (typeof Dos === 'function') {
+                    doomScriptReady = true;
+                    doomScriptLoading = false;
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = JS_DOS_SCRIPT;
+                script.setAttribute('data-jsdos', '1');
+                script.onload = () => {
+                    doomScriptReady = true;
+                    doomScriptLoading = false;
+                    document.dispatchEvent(new Event('jsdos-ready'));
+                    resolve();
+                };
+                script.onerror = () => {
+                    doomScriptLoading = false;
+                    document.dispatchEvent(new Event('jsdos-error'));
+                    reject(new Error('js-dos script failed'));
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        function startDoom() {
+            if (doomRunning) {
+                return;
+            }
+            injectJsDosAssets()
+                .then(() => {
+                    eeDoomContainer.innerHTML = '';
+                    Dos(eeDoomContainer, { url: DOOM_BUNDLE_URL });
+                    doomRunning = true;
+                })
+                .catch(() => {
+                    eeDoomContainer.innerHTML = '<p style="color:#888;padding:1rem;text-align:center;font-size:0.85rem;">Não foi possível carregar o DOOM.<br>Verifique sua conexão e tente novamente.</p>';
+                });
+        }
+
+        function stopDoom() {
+            eeDoomContainer.innerHTML = '';
+            doomRunning = false;
+        }
+
+        function setEasterEggPanel(panel) {
+            eeDoomPanel.classList.toggle('is-active', panel === 'doom');
+            eeVsCodePanel.classList.toggle('is-active', panel === 'vscode');
+            eeState = panel;
+        }
+
+        function openEasterEgg() {
+            if (eeState !== 'closed') {
+                return;
+            }
+            startDoom();
+            eeRoot.classList.add('is-open');
+            eeRoot.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('ee-active');
+            setEasterEggPanel('doom');
+        }
+
+        function closeEasterEgg() {
+            eeRoot.classList.remove('is-open');
+            eeRoot.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('ee-active');
+            eeDoomPanel.classList.remove('is-active');
+            eeVsCodePanel.classList.remove('is-active');
+            eeState = 'closed';
+            stopDoom();
+            resetKonamiProgress();
+        }
+
+        function openDiscoVoador() {
+            if (eeState !== 'doom') {
+                return;
+            }
+            setEasterEggPanel('vscode');
+        }
+
+        function backToDoom() {
+            if (eeState !== 'vscode') {
+                return;
+            }
+            setEasterEggPanel('doom');
+        }
+
+        function onKonamiKeydown(event) {
+            if (eeState !== 'closed') {
+                if (event.code === 'Escape') {
+                    closeEasterEgg();
+                }
+                return;
+            }
+
+            if (document.activeElement === pasteInput) {
+                return;
+            }
+
+            if (event.code === KONAMI_SEQUENCE[konamiIndex]) {
+                konamiIndex += 1;
+                scheduleKonamiReset();
+
+                if (konamiIndex === KONAMI_SEQUENCE.length) {
+                    resetKonamiProgress();
+                    openEasterEgg();
+                }
+                return;
+            }
+
+            if (konamiIndex > 0) {
+                resetKonamiProgress();
+                if (event.code === KONAMI_SEQUENCE[0]) {
+                    konamiIndex = 1;
+                    scheduleKonamiReset();
+                }
+            }
+        }
+
+        document.addEventListener('keydown', onKonamiKeydown);
+        eeExitBtn.addEventListener('click', closeEasterEgg);
+        eeDiscoBtn.addEventListener('click', openDiscoVoador);
+        eeBackToDoomBtn.addEventListener('click', backToDoom);
+        eeVsCodeExitBtn.addEventListener('click', closeEasterEgg);
     </script>
 </body>
 </html>
