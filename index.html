@@ -118,12 +118,36 @@
             line-height: 1.5;
         }
 
+        .page-wrapper {
+            width: 100%;
+            max-width: 480px;
+            transform-origin: center center;
+        }
+
+        @keyframes barrel-roll {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .page-wrapper.theme-transitioning {
+            animation: barrel-roll 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.theme-animating {
+            overflow: hidden;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .page-wrapper.theme-transitioning {
+                animation: none;
+            }
+        }
+
         .container {
             background: var(--color-container-bg);
             border: 1px solid var(--color-container-border);
             padding: 32px;
             border-radius: 8px;
-            max-width: 480px;
             width: 100%;
             box-shadow: 0 2px 8px var(--color-shadow);
         }
@@ -366,6 +390,7 @@
     </style>
 </head>
 <body>
+    <div class="page-wrapper">
     <div class="container">
         <div class="header-row">
             <h1>Calculadora de Horas Trabalhadas</h1>
@@ -413,6 +438,7 @@
             </div>
         </div>
     </div>
+    </div>
 
     <script>
         // ---- Tema (claro/escuro) ----
@@ -446,11 +472,67 @@
             }
         }
 
+        const THEME_ANIMATION_MS = 700;
+
+        function prefersReducedMotion() {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        function finishThemeTransition(wrapper, toggleBtn) {
+            if (wrapper) {
+                wrapper.classList.remove('theme-transitioning');
+            }
+            document.body.classList.remove('theme-animating');
+            if (toggleBtn) {
+                toggleBtn.disabled = false;
+            }
+        }
+
         function toggleTheme() {
+            const wrapper = document.querySelector('.page-wrapper');
+            const toggleBtn = document.getElementById('themeToggle');
+
+            if (wrapper && wrapper.classList.contains('theme-transitioning')) {
+                return;
+            }
+
             const atual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
             const proximo = atual === 'dark' ? 'light' : 'dark';
+
             applyTheme(proximo);
             setStoredTheme(proximo);
+
+            if (!wrapper || prefersReducedMotion()) {
+                return;
+            }
+
+            if (toggleBtn) {
+                toggleBtn.disabled = true;
+            }
+
+            document.body.classList.add('theme-animating');
+            wrapper.classList.add('theme-transitioning');
+
+            let finished = false;
+            const onDone = () => {
+                if (finished) {
+                    return;
+                }
+                finished = true;
+                wrapper.removeEventListener('animationend', onAnimationEnd);
+                clearTimeout(fallbackTimer);
+                finishThemeTransition(wrapper, toggleBtn);
+            };
+
+            const onAnimationEnd = (event) => {
+                if (event.target !== wrapper) {
+                    return;
+                }
+                onDone();
+            };
+
+            wrapper.addEventListener('animationend', onAnimationEnd);
+            const fallbackTimer = setTimeout(onDone, THEME_ANIMATION_MS + 50);
         }
 
         function timeToMinutes(timeStr) {
