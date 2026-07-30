@@ -477,6 +477,13 @@
             justify-content: center;
         }
 
+        .ee-disco-hint {
+            margin: 0;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.45);
+            text-align: center;
+        }
+
         .ee-btn {
             font-family: inherit;
             font-size: 0.85rem;
@@ -809,6 +816,7 @@
                 <button type="button" class="ee-btn" id="eeExitBtn">Sair</button>
                 <button type="button" class="ee-btn ee-btn-primary" id="eeDiscoBtn">Disco Voador 🛸</button>
             </div>
+            <p class="ee-disco-hint">Se o disco voador passar, tecle a letra L três vezes</p>
         </div>
 
         <div id="eeVsCodePanel" class="ee-panel">
@@ -1284,6 +1292,8 @@
         const JS_DOS_CSS = 'https://cdn.jsdelivr.net/npm/js-dos@8/dist/js-dos.css';
         const JS_DOS_SCRIPT = 'https://cdn.jsdelivr.net/npm/js-dos@8/dist/js-dos.js';
         const KONAMI_RESET_MS = 2500;
+        const DISCO_KEY = 'KeyL';
+        const DISCO_SEQUENCE_LENGTH = 3;
 
         const eeRoot = document.getElementById('easterEggRoot');
         const eeDoomPanel = document.getElementById('eeDoomPanel');
@@ -1296,9 +1306,14 @@
 
         let konamiIndex = 0;
         let konamiResetTimer = null;
+        let discoIndex = 0;
+        let discoResetTimer = null;
         let doomScriptReady = false;
         let doomScriptLoading = false;
         let doomRunning = false;
+        let doomProps = null;
+        let doomCi = null;
+        let isDoomAudioMuted = false;
         let eeState = 'closed';
 
         function resetKonamiProgress() {
@@ -1314,6 +1329,21 @@
                 clearTimeout(konamiResetTimer);
             }
             konamiResetTimer = setTimeout(resetKonamiProgress, KONAMI_RESET_MS);
+        }
+
+        function resetDiscoProgress() {
+            discoIndex = 0;
+            if (discoResetTimer) {
+                clearTimeout(discoResetTimer);
+                discoResetTimer = null;
+            }
+        }
+
+        function scheduleDiscoReset() {
+            if (discoResetTimer) {
+                clearTimeout(discoResetTimer);
+            }
+            discoResetTimer = setTimeout(resetDiscoProgress, KONAMI_RESET_MS);
         }
 
         function injectJsDosAssets() {
@@ -1363,6 +1393,24 @@
             });
         }
 
+        function applyDoomAudioMute() {
+            if (doomCi) {
+                if (isDoomAudioMuted) {
+                    doomCi.mute();
+                } else {
+                    doomCi.unmute();
+                }
+            }
+            if (doomProps) {
+                doomProps.setVolume(isDoomAudioMuted ? 0 : 1);
+            }
+        }
+
+        function setDoomAudioMuted(muted) {
+            isDoomAudioMuted = muted;
+            applyDoomAudioMute();
+        }
+
         function startDoom() {
             if (doomRunning) {
                 return;
@@ -1370,7 +1418,17 @@
             injectJsDosAssets()
                 .then(() => {
                     eeDoomContainer.innerHTML = '';
-                    Dos(eeDoomContainer, { url: DOOM_BUNDLE_URL });
+                    isDoomAudioMuted = false;
+                    doomCi = null;
+                    doomProps = Dos(eeDoomContainer, {
+                        url: DOOM_BUNDLE_URL,
+                        onEvent: (event, arg) => {
+                            if (event === 'ci-ready') {
+                                doomCi = arg;
+                                applyDoomAudioMute();
+                            }
+                        }
+                    });
                     doomRunning = true;
                 })
                 .catch(() => {
@@ -1379,7 +1437,13 @@
         }
 
         function stopDoom() {
+            if (doomProps) {
+                doomProps.stop();
+            }
             eeDoomContainer.innerHTML = '';
+            doomProps = null;
+            doomCi = null;
+            isDoomAudioMuted = false;
             doomRunning = false;
         }
 
@@ -1401,6 +1465,7 @@
         }
 
         function closeEasterEgg() {
+            setDoomAudioMuted(true);
             eeRoot.classList.remove('is-open');
             eeRoot.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('ee-active');
@@ -1409,6 +1474,7 @@
             eeState = 'closed';
             stopDoom();
             resetKonamiProgress();
+            resetDiscoProgress();
         }
 
         function openDiscoVoador() {
@@ -1416,6 +1482,7 @@
                 return;
             }
             setEasterEggPanel('vscode');
+            setDoomAudioMuted(true);
         }
 
         function backToDoom() {
@@ -1423,12 +1490,21 @@
                 return;
             }
             setEasterEggPanel('doom');
+            setDoomAudioMuted(false);
         }
 
         function onKonamiKeydown(event) {
             if (eeState !== 'closed') {
                 if (event.code === 'Escape') {
                     closeEasterEgg();
+                }
+                if (eeState === 'doom' && !event.repeat && event.code === DISCO_KEY) {
+                    discoIndex += 1;
+                    scheduleDiscoReset();
+                    if (discoIndex === DISCO_SEQUENCE_LENGTH) {
+                        resetDiscoProgress();
+                        openDiscoVoador();
+                    }
                 }
                 return;
             }
